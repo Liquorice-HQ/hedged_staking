@@ -1,0 +1,9 @@
+sections:
+    public:  nodb
+    #public:  clickhouse://localhost:8123
+    #public:  clickhouse://db:8123
+    #
+    private: postgresql://192.168.10.2/hermes
+    #private: clickhouse://localhost:8123
+ids:
+    tenant_id: Tenant

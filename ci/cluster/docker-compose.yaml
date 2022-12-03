@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+
+  hedgedstaking:
+    image: "vf-hedgedstaking"
+    command:
+        'monitoring'
+    restart: unless-stopped
+    working_dir: /workdir
+    volumes:
+      - ./hedgedstaking-config:/workdir
+
+  monitoring:
+    image: "prom/prometheus:latest"
+    volumes:
+      - ./config/monitoring:/etc/prometheus:ro
+      - vf-hedgestaking-monitoring-data:/prometheus
+    depends_on:
+      - hedgedstaking
+    restart: unless-stopped
+
+  monitoring-ui:
+    image: "grafana/grafana:latest"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=password
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/home.json
+    depends_on:
+      - monitoring
+    volumes:
+      - ./config/monitoring-ui:/etc/grafana/provisioning:ro
+      - vf-hedgestaking-monitoring-ui-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+volumes:
+    vf-hedgestaking-monitoring-data: {}
+    vf-hedgestaking-monitoring-ui-data: {}
+
